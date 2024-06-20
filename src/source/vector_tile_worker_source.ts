@@ -80,7 +80,6 @@ export class VectorTileWorkerSource implements WorkerSource {
                 new Uint8Array(response.data),
                 featureTables,
             );
-            console.log(featureTables);
             return {
                 vectorTile,
                 rawData: response.data,
