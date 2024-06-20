@@ -19,7 +19,8 @@ const MIN = -MAX - 1;
  * @param feature - the vector tile feature to load
  */
 export function loadGeometry(feature: VectorTileFeature): Array<Array<Point>> {
-    const scale = EXTENT / feature.extent;
+    // XXX hardcoding this for now since MLTs don't include it yet
+    const scale = EXTENT / (feature.extent || 4096);
     const geometry = feature.loadGeometry();
     for (let r = 0; r < geometry.length; r++) {
         const ring = geometry[r];

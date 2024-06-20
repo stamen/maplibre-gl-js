@@ -1,6 +1,7 @@
 import {ExpiryData, getArrayBuffer} from '../util/ajax';
 
-import vt from '@mapbox/vector-tile';
+import { MltDecoder, TileSetMetadata } from 'maplibre-tile-spec';
+import vt from 'mlt-vector-tile';
 import Protobuf from 'pbf';
 import {WorkerTile} from './worker_tile';
 import {extend} from '../util/util';
@@ -66,8 +67,20 @@ export class VectorTileWorkerSource implements WorkerSource {
      */
     async loadVectorTile(params: WorkerTileParameters, abortController: AbortController): Promise<LoadVectorTileResult> {
         const response = await getArrayBuffer(params.request, abortController);
+        const metadataResponse = await getArrayBuffer({
+            url: params.metadataRequest.url,
+        }, new AbortController());
+
         try {
-            const vectorTile = new vt.VectorTile(new Protobuf(response.data));
+            const metadata = new Uint8Array(metadataResponse.data);
+            const tilesetMetadata = TileSetMetadata.fromBinary(metadata);
+            const featureTables = MltDecoder.generateFeatureTables(tilesetMetadata);
+
+            const vectorTile = new vt.VectorTile(
+                new Uint8Array(response.data),
+                featureTables,
+            );
+            console.log(featureTables);
             return {
                 vectorTile,
                 rawData: response.data,
@@ -96,7 +109,7 @@ export class VectorTileWorkerSource implements WorkerSource {
         const tileUid = params.uid;
 
         const perf = (params && params.request && params.request.collectResourceTiming) ?
-            new RequestPerformance(params.request) : false;
+        new RequestPerformance(params.request) : false;
 
         const workerTile = new WorkerTile(params);
         this.loading[tileUid] = workerTile;

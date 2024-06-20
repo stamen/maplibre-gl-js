@@ -29,6 +29,7 @@ export type TileParameters = {
 export type WorkerTileParameters = TileParameters & {
     tileID: OverscaledTileID;
     request?: RequestParameters;
+    metadataRequest?: RequestParameters;
     zoom: number;
     maxZoom?: number;
     tileSize: number;
