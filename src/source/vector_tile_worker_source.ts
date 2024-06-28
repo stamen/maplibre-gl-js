@@ -1,7 +1,7 @@
 import {ExpiryData, getArrayBuffer} from '../util/ajax';
 
-import { MltDecoder, TileSetMetadata } from 'maplibre-tile-spec';
-import vt from 'mlt-vector-tile';
+import { MltDecoder, TileSetMetadata } from '@maplibre/maplibre-tile-spec';
+import * as vt from '@maplibre/maplibre-tile-spec/dist/src/mlt-vector-tile-js';
 import Protobuf from 'pbf';
 import {WorkerTile} from './worker_tile';
 import {extend} from '../util/util';
@@ -74,11 +74,10 @@ export class VectorTileWorkerSource implements WorkerSource {
         try {
             const metadata = new Uint8Array(metadataResponse.data);
             const tilesetMetadata = TileSetMetadata.fromBinary(metadata);
-            const featureTables = MltDecoder.generateFeatureTables(tilesetMetadata);
 
             const vectorTile = new vt.VectorTile(
                 new Uint8Array(response.data),
-                featureTables,
+                tilesetMetadata,
             );
             return {
                 vectorTile,
