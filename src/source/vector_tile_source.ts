@@ -190,6 +190,8 @@ export class VectorTileSource extends Evented implements Source {
 
     async loadTile(tile: Tile): Promise<void> {
         const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
+        // Note: this need to load a separate meta.pbf is temporary and will not exist in the near future.
+        // See https://github.com/maplibre/maplibre-tile-spec/issues/214 for details
         const metadataUrl = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme) + '.meta.pbf';
         const params = {
             request: this.map._requestManager.transformRequest(url, ResourceType.Tile),
