@@ -107,7 +107,7 @@ export class VectorTileWorkerSource implements WorkerSource {
         const tileUid = params.uid;
 
         const perf = (params && params.request && params.request.collectResourceTiming) ?
-        new RequestPerformance(params.request) : false;
+            new RequestPerformance(params.request) : false;
 
         const workerTile = new WorkerTile(params);
         this.loading[tileUid] = workerTile;
